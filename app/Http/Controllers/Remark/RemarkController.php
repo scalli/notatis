@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Remark;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Config;
 
 class RemarkController extends ApiController
 {
@@ -17,7 +18,16 @@ class RemarkController extends ApiController
      */
     public function index()
     {
+     //working code to change database for different schools --> dangerous?
+     // Config::set('database.connections.sqlite', Config::get('database.connections.gomad'));
+     // DB::purge('sqlite');
+     // DB::reconnect('sqlite');
+
         $remarks = Remark::all();
+
+    //$remarks = Remark::on('gomad')->get();
+
+        return $this->showAll($remarks);
 
 //        $remarks = DB::table('remarks')
 //            ->join('users as users1', 'users1.id', '=', 'student_id')

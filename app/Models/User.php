@@ -31,7 +31,8 @@ class User extends Authenticatable
 
     protected $dates = ['deleted_at'];
     protected $fillable = [
-        'name',
+        'lastName',
+        'firstName',
         'email',
         'password',
         'verified',

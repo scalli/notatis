@@ -11,6 +11,10 @@ use App\Http\Controllers\Student\StudentRemarkController;
 use App\Http\Controllers\Teacher\TeacherController;
 use App\Http\Controllers\Teacher\TeacherRemarkController;
 use App\Http\Controllers\User\UserController;
+
+
+use App\Http\Controllers\AuthController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,16 +30,27 @@ use Illuminate\Support\Facades\Route;
 */
 //Route::get('/users', [UserController::class, 'index']);
 
-Route::resource('class1s', Class1Controller::class);
-Route::resource('class1s.remarks', Class1RemarkController::class, ['only' => ['index']]);
-Route::resource('remarks', RemarkController::class);
-Route::resource('remarkoptions', RemarkOptionController::class);
-Route::resource('schoolyears', SchoolyearController::class);
-Route::resource('students', StudentController::class);
-Route::resource('students.remarks', StudentRemarkController::class, ['only' => ['index']]);
-Route::resource('teachers', TeacherController::class);
-Route::resource('teachers.remarks', TeacherRemarkController::class, ['only' => ['index']]);
-Route::resource('users', UserController::class);
-Route::resource('severities', SeverityController::class);
-Route::get('/detailedStudent/{id}',[StudentController::class, 'showCompleteStudent']);
-Route::get('/filteredRemarks/',[RemarkController::class, 'showFilteredRemarks']);
+// Route::domain('{subdomain}.'.env('APP_DOMAIN'))->middleware('schoolplatform:'.subdomain)->group(function () {
+Route::group(['domain' => '{subdomain}.'.env('APP_DOMAIN'), 'middleware' => 'schoolplatform'], function () {
+	Route::resource('class1s', Class1Controller::class);
+	Route::resource('class1s.remarks', Class1RemarkController::class, ['only' => ['index']]);
+	Route::resource('remarks', RemarkController::class)->middleware('schoolplatform:{subdomain}');
+	Route::resource('remarkoptions', RemarkOptionController::class);
+	Route::resource('schoolyears', SchoolyearController::class);
+	Route::resource('students', StudentController::class);
+	Route::resource('students.remarks', StudentRemarkController::class, ['only' => ['index']]);
+	Route::resource('teachers', TeacherController::class);
+	Route::resource('teachers.remarks', TeacherRemarkController::class, ['only' => ['index']]);
+	Route::resource('users', UserController::class);
+	Route::resource('severities', SeverityController::class);
+	Route::get('/detailedStudent/{id}',[StudentController::class, 'showCompleteStudent']);
+	Route::get('/filteredRemarks/',[RemarkController::class, 'showFilteredRemarks']);
+
+	Route::name('verify')->get('/users/verify/{token}', [UserController::class,'verify']);
+
+	//Authentication routes with Laravel Sanctum
+	Route::post('/registerstudent', [AuthController::class, 'registerstudent']);
+	Route::post('/registerteacher', [AuthController::class, 'registerteacher']);
+	Route::post('/login', [AuthController::class, 'login']);
+	Route::post('/me', [AuthController::class, 'me'])->middleware('auth:sanctum');
+});
