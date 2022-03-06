@@ -18,7 +18,7 @@ class SetDBMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-     //dd($request->subdomain);
+     // dd($request->headers_list());
      Config::set('database.connections.sqlite', Config::get('database.connections.'.$request->subdomain));
      DB::purge('sqlite');
      DB::reconnect('sqlite');

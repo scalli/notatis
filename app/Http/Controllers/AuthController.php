@@ -29,7 +29,8 @@ class AuthController extends Controller
     //        ]);
 
     $rules = [
-            'name' => 'required',
+            'firstName' => 'required',
+            'lastName' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6'
         ];
@@ -69,7 +70,8 @@ class AuthController extends Controller
     {
 
     $rules = [
-            'name' => 'required',
+            'firstName' => 'required',
+            'lastName' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6'
         ];
@@ -115,7 +117,7 @@ class AuthController extends Controller
      // DB::purge('sqlite');
      // DB::reconnect('sqlite');
 
-    if (!Auth::attempt($request->only('email', 'password', 'platform'))) {
+    if (!Auth::attempt($request->only('email', 'password'))) {
     return response()->json([
     'message' => 'Invalid login details'
                ], 401);
@@ -124,31 +126,45 @@ class AuthController extends Controller
     $user = User::where('email', $request['email'])->firstOrFail();
 
     
-    if($user->admin == 'true'){
-        //User is an admin
-        $token = $user->createToken('auth_token',['adminpower'])->plainTextToken;
-    }    
+    // if($user->admin == 'true'){
+    //     //User is an admin
+    //     $token = $user->createToken('auth_token',['adminpower'])->plainTextToken;
+    // }    
 
-    if($user->role == 0){
-        //User is a student
-        $token = $user->createToken('auth_token',['studentpower'])->plainTextToken;
-    }
+    // if($user->role == 0){
+    //     //User is a student
+    //     $token = $user->createToken('auth_token',['studentpower'])->plainTextToken;
+    // }
 
-    if($user->role == 1){
-        //User is a teacher
-        $token = $user->createToken('auth_token',['teacherpower'])->plainTextToken;
-    }
+    // if($user->role == 1){
+    //     //User is a teacher
+    //     $token = $user->createToken('auth_token',['teacherpower'])->plainTextToken;
+    // }
     
     // $token = $user->createToken('auth_token')->plainTextToken;
 
-    return response()->json([
-               'access_token' => $token,
-               'token_type' => 'Bearer',
-    ]);
+    // return response()->json([
+    //            'access_token' => $token,
+    //            'token_type' => 'Bearer',
+    // ]);
+
+
+     return request()->user();
+
+
+    // return response()->json([
+    //            'user' => $user,
+    // ]);
+
     }//end of method login
+
+
+    public function logout(Request $request){
+        Auth::guard('web')->logout();
+    }    
 
     public function me(Request $request)
     {
-    return $request->user();
+        return $request->user();
     }
 }

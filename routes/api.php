@@ -31,10 +31,10 @@ use Illuminate\Support\Facades\Route;
 //Route::get('/users', [UserController::class, 'index']);
 
 // Route::domain('{subdomain}.'.env('APP_DOMAIN'))->middleware('schoolplatform:'.subdomain)->group(function () {
-Route::group(['domain' => '{subdomain}.'.env('APP_DOMAIN'), 'middleware' => 'schoolplatform'], function () {
+ Route::group(['domain' => '{subdomain}.'.env('APP_DOMAIN'), 'middleware' => 'schoolplatform'], function () {
 	Route::resource('class1s', Class1Controller::class);
 	Route::resource('class1s.remarks', Class1RemarkController::class, ['only' => ['index']]);
-	Route::resource('remarks', RemarkController::class)->middleware('schoolplatform:{subdomain}');
+	Route::resource('remarks', RemarkController::class)->middleware('auth:sanctum');
 	Route::resource('remarkoptions', RemarkOptionController::class);
 	Route::resource('schoolyears', SchoolyearController::class);
 	Route::resource('students', StudentController::class);
@@ -52,5 +52,6 @@ Route::group(['domain' => '{subdomain}.'.env('APP_DOMAIN'), 'middleware' => 'sch
 	Route::post('/registerstudent', [AuthController::class, 'registerstudent']);
 	Route::post('/registerteacher', [AuthController::class, 'registerteacher']);
 	Route::post('/login', [AuthController::class, 'login']);
+	Route::post('/logout', [AuthController::class, 'logout']);
 	Route::post('/me', [AuthController::class, 'me'])->middleware('auth:sanctum');
-});
+ });
