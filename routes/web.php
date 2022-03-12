@@ -1,7 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AngularController;
 
+use App\Http\Controllers\AuthController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,3 +14,15 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+//Route::any('/{any}', [AngularController::class,'index.html']);
+
+// Route::get('/', function() {
+// 	View::addExtension('html','php'); 
+// 	return View::make('index');
+// });
+
+//Added to try login with cookie sanctum spa
+ // Route::group(['domain' => '{subdomain}.'.env('APP_DOMAIN'), 'middleware' => 'schoolplatform'], function () {
+	// Route::post('/login', [AuthController::class, 'login']);
+ // });

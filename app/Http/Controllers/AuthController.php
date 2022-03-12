@@ -126,35 +126,31 @@ class AuthController extends Controller
     $user = User::where('email', $request['email'])->firstOrFail();
 
     
-    // if($user->admin == 'true'){
-    //     //User is an admin
-    //     $token = $user->createToken('auth_token',['adminpower'])->plainTextToken;
-    // }    
+    if($user->admin == 'true'){
+        //User is an admin
+        $token = $user->createToken('auth_token',['adminpower'])->plainTextToken;
+    }    
 
-    // if($user->role == 0){
-    //     //User is a student
-    //     $token = $user->createToken('auth_token',['studentpower'])->plainTextToken;
-    // }
+    if($user->role == 0){
+        //User is a student
+        $token = $user->createToken('auth_token',['studentpower'])->plainTextToken;
+    }
 
-    // if($user->role == 1){
-    //     //User is a teacher
-    //     $token = $user->createToken('auth_token',['teacherpower'])->plainTextToken;
-    // }
+    if($user->role == 1){
+        //User is a teacher
+        $token = $user->createToken('auth_token',['teacherpower'])->plainTextToken;
+    }
     
-    // $token = $user->createToken('auth_token')->plainTextToken;
+    $token = $user->createToken('auth_token')->plainTextToken;
 
-    // return response()->json([
-    //            'access_token' => $token,
-    //            'token_type' => 'Bearer',
-    // ]);
-
-
-     return request()->user();
+    return response()->json([
+               'accessToken' => $token,
+               'token_type' => 'Bearer',
+    ]);
 
 
-    // return response()->json([
-    //            'user' => $user,
-    // ]);
+     // return request()->user();
+
 
     }//end of method login
 
