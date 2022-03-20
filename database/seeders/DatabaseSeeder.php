@@ -6,6 +6,7 @@ use App\Models\Class1;
 use App\Models\Remark;
 use App\Models\RemarkOption;
 use App\Models\Schoolyear;
+use App\Models\School;
 use App\Models\Severity;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -36,6 +37,8 @@ class DatabaseSeeder extends Seeder
         //Schoolyear::factory()->count(5)->create();
         $this->seedSchoolyears();
 
+        $this->seedSchools();
+
         //Class1::factory()->count(10)->create();
         $this->seedClass1s();
 
@@ -45,6 +48,37 @@ class DatabaseSeeder extends Seeder
         $this->seedSeverities();
         Remark::factory()->count(200)->create();
     }
+
+
+    public function seedSchools(){
+            School::create([
+                    'schoolname' => 'Middenschool Ninove',
+                    'smartschoolplatform' => 'msninove',
+                    'street' => 'Astridlaan',
+                    'number' => '33',
+                    'postcode' => '9400',
+                    'city' => 'Ninove',
+                    'contact' => 'Jimmy Schandevyl',  
+                    'tel' => '054232628',
+                    'email' => 'economaat@middenschool-ninove.be',
+                    'language' => 'nl',
+                    'schoolyear_filter' => '1',
+            ]);
+            School::create([
+                    'schoolname' => 'GO MAD',
+                    'smartschoolplatform' => 'gomad',
+                    'street' => 'Forten',
+                    'number' => '18',
+                    'postcode' => '9200',
+                    'city' => 'Dendermonde',
+                    'contact' => 'Bart Roels',  
+                    'tel' => '052232628',
+                    'email' => 'economaat@gomad.be',
+                    'language' => 'nl',
+                    'schoolyear_filter' => '1',
+            ]);
+        }
+
 
     public function seedSchoolyears(){
         Schoolyear::create(['schoolyear' => '2019-2020']);

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class School extends Model
 {
@@ -19,6 +20,8 @@ class School extends Model
     'city',
     'contact',  
     'tel',
-    'email'
+    'email',
+    'language',
+    'schoolyear_filter',
     ];
 }

@@ -24,6 +24,8 @@ class CreateSchoolsTable extends Migration
             $table->string('contact');
             $table->string('tel'); 
             $table->string('email');
+            $table->string('language'); 
+            $table->integer('schoolyear_filter');
             $table->timestamps();
             $table->softDeletes();
         });

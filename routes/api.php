@@ -5,6 +5,7 @@ use App\Http\Controllers\Class1\Class1RemarkController;
 use App\Http\Controllers\Remark\RemarkController;
 use App\Http\Controllers\RemarkOption\RemarkOptionController;
 use App\Http\Controllers\Schoolyear\SchoolyearController;
+use App\Http\Controllers\School\SchoolController;
 use App\Http\Controllers\Severity\SeverityController;
 use App\Http\Controllers\Student\StudentController;
 use App\Http\Controllers\Student\StudentRemarkController;
@@ -37,6 +38,7 @@ use Illuminate\Support\Facades\Route;
 	Route::resource('remarks', RemarkController::class)->middleware('auth:sanctum');
 	Route::resource('remarkoptions', RemarkOptionController::class);
 	Route::resource('schoolyears', SchoolyearController::class);
+	Route::resource('schools', SchoolController::class);
 	Route::resource('students', StudentController::class);
 	Route::resource('students.remarks', StudentRemarkController::class, ['only' => ['index']]);
 	Route::resource('teachers', TeacherController::class);
@@ -45,6 +47,7 @@ use Illuminate\Support\Facades\Route;
 	Route::resource('severities', SeverityController::class);
 	Route::get('/detailedStudent/{id}',[StudentController::class, 'showCompleteStudent']);
 	Route::get('/filteredRemarks/',[RemarkController::class, 'showFilteredRemarks']);
+	Route::get('/getSchoolInfoByExternalCode/{smartschoolplatform}',[SchoolController::class, 'getSchoolInfoByExternalCode']);
 
 	Route::name('verify')->get('/users/verify/{token}', [UserController::class,'verify']);
 
