@@ -39,6 +39,25 @@ class StudentController extends ApiController
 //        return $this->showAll($students);
     }
 
+    public function getStudentsBySchoolyearAndCurrentClass (int $schoolyearfilter){
+
+        $students = DB::table('users')
+           ->join('class1s', 'users.class1_id', '=', 'class1s.id')
+           ->join('schoolyears', 'schoolyears.id', '=', 'class1s.schoolyear_id')
+           ->select('users.*', 'class1s.class1', 'schoolyears.schoolyear')
+           ->where('role', User::STUDENT_USER)
+           ->where('class1s.schoolyear_id', '=', $schoolyearfilter)
+           ->select('users.id','users.firstName', 'users.lastName', 'users.email', 'users.username',
+                    'users.password', 'users.language', 'users.lastLoginDate', 'users.active', 'users.role',
+                    'users.class1_id', 'class1s.class1')
+           ->get();
+
+
+
+       return $this->showAll($students);
+
+    }
+
 
     /**
      * Store a newly created resource in storage.

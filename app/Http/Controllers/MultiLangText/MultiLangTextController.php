@@ -1,34 +1,40 @@
 <?php
 
-namespace App\Http\Controllers\School;
+namespace App\Http\Controllers\MultiLangText;
 
+
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 
-class SchoolController extends Controller
+class MultiLangTextController extends ApiController
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $language = $request->input('language');
+
+        $HTMLText = DB::table('multi_lang_texts')
+                    ->select($language)
+                    ->get();
+
+        for ($i = 0; $i < sizeof($HTMLText); $i++) {
+          $HTMLText[$i] = $HTMLText[$i]->$language;
+        }
+
+        // foreach ($HTMLText as &$value) {
+        //   $value = $value->nl;
+        // }  
+
+        return $this->showAll($HTMLText);
     }
 
-    public function getSchoolInfoByExternalCode(){
-
-        $subdomain = \Illuminate\Support\Arr::first(explode('.', request()->getHost()));
-
-        // $school = DB::table('schools')->where('smartschoolplatform',$smartschoolplatform)->get();
-        $school = DB::table('schools')->where('smartschoolplatform',$subdomain)->get();
-
-        return $school;
-    }
 
     /**
      * Show the form for creating a new resource.

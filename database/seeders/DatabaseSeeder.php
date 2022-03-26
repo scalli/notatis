@@ -8,6 +8,7 @@ use App\Models\RemarkOption;
 use App\Models\Schoolyear;
 use App\Models\School;
 use App\Models\Severity;
+use App\Models\RankingSettings;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -41,6 +42,8 @@ class DatabaseSeeder extends Seeder
 
         //Class1::factory()->count(10)->create();
         $this->seedClass1s();
+
+        $this->seedRankingSettings();
 
         User::factory()->count(20)->create();
         //RemarkOption::factory()->count(6)->create();
@@ -85,6 +88,20 @@ class DatabaseSeeder extends Seeder
         Schoolyear::create(['schoolyear' => '2020-2021']);
         Schoolyear::create(['schoolyear' => '2021-2022']);
         Schoolyear::create(['schoolyear' => '2022-2023']);
+    }
+
+    public function seedRankingSettings(){
+        RankingSettings::create([
+            'ranking_start_total' => '1000',
+            'one_penalty' => '2',
+            'two_penalty' => '5',
+            'three_penalty' => '10',
+            'four_penalty' => '50',
+            'ranking_start_date' => '1245',
+            'ranking_end_date' => '7885',
+            'last_updated' => '14195',
+        ]);
+
     }
 
     public function seedRemarkOptions(){

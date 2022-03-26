@@ -39,6 +39,7 @@ class AuthController extends Controller
 
         $data = $request->all();
         $data['password'] = Hash::make($request->password);
+        $data['username'] = $data['email'];
         $data['verified'] = User::UNVERIFIED_USER;
         $data['verification_token'] = User::generateVerificationCode();
         $data['admin'] = User::REGULAR_USER;
@@ -55,6 +56,7 @@ class AuthController extends Controller
         $data['role'] = 0;
         $data['created_at'] = now();
         $data['updated_at'] = now();
+        $data['lastLoginDate'] = now();
 
         $user = User::create($data);
 
@@ -80,6 +82,7 @@ class AuthController extends Controller
 
         $data = $request->all();
         $data['password'] = Hash::make($request->password);
+        $data['username'] = $data['email'];
         $data['verified'] = User::UNVERIFIED_USER;
         $data['verification_token'] = User::generateVerificationCode();
         $data['admin'] = User::REGULAR_USER;
@@ -96,6 +99,7 @@ class AuthController extends Controller
         $data['role'] = 1;
         $data['created_at'] = now();
         $data['updated_at'] = now();
+        $data['lastLoginDate'] = now();
 
         $user = User::create($data);
 

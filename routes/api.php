@@ -12,6 +12,8 @@ use App\Http\Controllers\Student\StudentRemarkController;
 use App\Http\Controllers\Teacher\TeacherController;
 use App\Http\Controllers\Teacher\TeacherRemarkController;
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\MultiLangText\MultiLangTextController;
+use App\Http\Controllers\RankingSettings\RankingSettingsController;
 
 
 use App\Http\Controllers\AuthController;
@@ -45,9 +47,13 @@ use Illuminate\Support\Facades\Route;
 	Route::resource('teachers.remarks', TeacherRemarkController::class, ['only' => ['index']]);
 	Route::resource('users', UserController::class);
 	Route::resource('severities', SeverityController::class);
+	Route::resource('multilangtext', MultiLangTextController::class);
+	Route::resource('rankingsettings', RankingSettingsController::class); 
+
 	Route::get('/detailedStudent/{id}',[StudentController::class, 'showCompleteStudent']);
 	Route::get('/filteredRemarks/',[RemarkController::class, 'showFilteredRemarks']);
-	Route::get('/getSchoolInfoByExternalCode/{smartschoolplatform}',[SchoolController::class, 'getSchoolInfoByExternalCode']);
+	Route::get('/getSchoolInfoByExternalCode',[SchoolController::class, 'getSchoolInfoByExternalCode']);
+	Route::get('/getStudentsBySchoolyearAndCurrentClass/{schoolyearfilter}',[StudentController::class, 'getStudentsBySchoolyearAndCurrentClass']);
 
 	Route::name('verify')->get('/users/verify/{token}', [UserController::class,'verify']);
 

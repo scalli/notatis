@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Class1;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Config;
 
 class Class1Controller extends ApiController
 {
@@ -13,9 +15,16 @@ class Class1Controller extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $schoolyear_id = $request->input('schoolyear_id');
+
+        $classSchoolyears = DB::table('class1s')
+            ->select('id','class1','schoolyear_id')
+            ->where('schoolyear_id', '=', $schoolyear_id)
+            ->get();
+
+        return $this->showAll($classSchoolyears);
     }
 
     /**

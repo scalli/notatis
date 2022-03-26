@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\School;
+namespace App\Http\Controllers\RankingSettings;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
+use App\Models\RankingSettings;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 
-class SchoolController extends Controller
+class RankingSettingsController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -17,17 +18,22 @@ class SchoolController extends Controller
      */
     public function index()
     {
-        //
-    }
+        // $RankingSettings = DB::table('ranking_settings')
+        //             ->get();
 
-    public function getSchoolInfoByExternalCode(){
+        $RankingSettings = RankingSettings::query()->get();
 
-        $subdomain = \Illuminate\Support\Arr::first(explode('.', request()->getHost()));
+        // $RankingSettings = (array) $RankingSettings;
 
-        // $school = DB::table('schools')->where('smartschoolplatform',$smartschoolplatform)->get();
-        $school = DB::table('schools')->where('smartschoolplatform',$subdomain)->get();
+        // for ($i = 0; $i < sizeof($RankingSettings); $i++) {
+        //   $RankingSettings[$i] = $RankingSettings[$i]->$language;
+        // }
 
-        return $school;
+        // foreach ($HTMLText as &$value) {
+        //   $value = $value->nl;
+        // }  
+
+        return $this->showAll($RankingSettings);
     }
 
     /**

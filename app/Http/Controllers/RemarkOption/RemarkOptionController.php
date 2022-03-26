@@ -18,6 +18,10 @@ class RemarkOptionController extends ApiController
     {
         $remark_options = RemarkOption::query()->get(['id','option']);
 
+        // for ($i = 0; $i < sizeof($remark_options); $i++) {
+        //   $remark_options[$i] = $remark_options[$i]->$language;
+        // }
+
         return $this->showAll($remark_options);
     }
 
