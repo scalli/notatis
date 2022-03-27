@@ -42,13 +42,37 @@ class RemarkController extends ApiController
 
     public function showFilteredRemarks(Request $request){
 
-            $student_id = $request->input('student_id');
-            $teacher_id = $request->input('teacher_id');
-            $remarkoption_id = $request->input('remarkoption_id');
-            $class1_id = $request->input('class1_id');
-            $start_date = $request->input('start_date');
-            $end_date = $request->input('end_date');
-            $severity_id = $request->input('severity_id');
+            // $student_id = $request->input('student_id');
+            // $teacher_id = $request->input('teacher_id');
+            // $remarkoption_id = $request->input('remarkoption_id');
+            // $class1_id = $request->input('class1_id');
+            // $start_date = $request->input('start_date');
+            // $end_date = $request->input('end_date');
+            // $severity_id = $request->input('severity_id');
+
+            if($request->input('studentId') != 0){
+                $student_id = $request->input('studentId');
+            }
+            else{$student_id = null;}
+            
+            if($request->input('studentId') != 0){
+                $teacher_id = $request->input('authorId');            
+            }
+            else{$teacher_id = null;}
+            
+            
+            // $remarkoption_id = $request->input('remarkoption_id');
+            // $class1_id = $request->input('class1Id');
+
+            if($request->input('class1Id') != 0){
+                $class1_id = $request->input('class1Id');            
+            }
+            else{$class1_id = null;}
+
+            $start_date = $request->input('fromDate');
+            $end_date = $request->input('toDate');
+            $severity_ids = $request->input('severities');
+            //dd($severity_ids);
 
             $remarks = DB::table('remarks')
                 ->join('users as students', 'students.id', '=', 'remarks.student_id')
@@ -63,11 +87,11 @@ class RemarkController extends ApiController
                 ->when($teacher_id, function ($query, $teacher_id) {
                     return $query->where('remarks.teacher_id', '=', $teacher_id);
                 })
-                ->when($remarkoption_id, function ($query, $remarkoption_id) {
-                    return $query->where('remarks.remarkoption_id', '=', $remarkoption_id);
-                })
-                ->when($severity_id, function ($query, $severity_id) {
-                    return $query->where('remarks.severity_id', '=', $severity_id);
+                // ->when($remarkoption_id, function ($query, $remarkoption_id) {
+                //     return $query->where('remarks.remarkoption_id', '=', $remarkoption_id);
+                // })
+                ->when($severity_ids, function ($query, $severity_ids) {
+                    return $query->whereIn('remarks.severity_id', $severity_ids);
                 })
                 ->when($class1_id, function ($query, $class1_id) {
                     return $query->where('students.class1_id', '=', $class1_id);

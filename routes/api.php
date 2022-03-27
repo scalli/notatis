@@ -51,7 +51,7 @@ use Illuminate\Support\Facades\Route;
 	Route::resource('rankingsettings', RankingSettingsController::class); 
 
 	Route::get('/detailedStudent/{id}',[StudentController::class, 'showCompleteStudent']);
-	Route::get('/filteredRemarks/',[RemarkController::class, 'showFilteredRemarks']);
+	Route::post('/filteredRemarks',[RemarkController::class, 'showFilteredRemarks']);
 	Route::get('/getSchoolInfoByExternalCode',[SchoolController::class, 'getSchoolInfoByExternalCode']);
 	Route::get('/getStudentsBySchoolyearAndCurrentClass/{schoolyearfilter}',[StudentController::class, 'getStudentsBySchoolyearAndCurrentClass']);
 
