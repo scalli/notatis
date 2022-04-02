@@ -80,7 +80,7 @@ class RemarkController extends ApiController
                 ->join('remark_options', 'remark_options.id', '=', 'remarks.remarkoption_id')
                 ->join('severities', 'severities.id', '=', 'remarks.severity_id')
                 ->join('class1s', 'class1s.id', '=', 'students.class1_id')
-                ->select('remarks.*')
+                ->select('remarks.*', 'students.firstName as studentFirstName', 'students.lastName as studentLastName', 'class1s.class1', 'teachers.firstName as teacherFirstName', 'teachers.lastName as teacherLastName')
                 ->when($student_id, function ($query, $student_id) {
                     return $query->where('remarks.student_id', '=', $student_id);
                 })
