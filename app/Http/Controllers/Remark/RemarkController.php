@@ -109,6 +109,38 @@ class RemarkController extends ApiController
         return $this->showAll($remarks);
     }
 
+    public function storeSameRemarkForMultipleStudents (Request $request){
+        $rules = [
+            'date' => 'required',
+            'remark' => 'required',
+            'severity' => 'required',
+            'teacherId' => 'required|integer',
+            'studentId' => 'array'
+        ];
+
+        $this->validate($request, $rules);
+
+        $data = $request->all();
+
+        $savedRemarkIds = [];
+
+        foreach ($data['studentId'] as $studentId) {
+            $remarkToSave = []; 
+            $remarkToSave['date'] = $data['date'];
+            $remarkToSave['remark'] = $data['remark']; 
+            $remarkToSave['severity_id'] = $data['severity'];   
+            $remarkToSave['extra_info'] = $data['extraInfo']; 
+            $remarkToSave['student_id'] = $studentId;  
+            $remarkToSave['teacher_id'] = $data['teacherId'];
+
+            $remark_id = DB::table('remarks')->insertGetId($remarkToSave);
+
+            array_push($savedRemarkIds, $remark_id);
+        }
+
+        return $this->showAll(collect($savedRemarkIds), 201);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
