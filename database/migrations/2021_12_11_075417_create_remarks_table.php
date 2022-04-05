@@ -15,13 +15,13 @@ class CreateRemarksTable extends Migration
     {
         Schema::create('remarks', function (Blueprint $table) {
             $table->id();
-            $table->dateTime('date')->nullable('false');
-            $table->string('extra_info');
-            $table->string('remark')->nullable('false');
-            $table->integer('severity_id')->unsigned()->nullable('false');
-            $table->integer('remarkoption_id')->nullable('false');
-            $table->integer('student_id')->nullable('false');
-            $table->integer('teacher_id')->nullable('false');
+            $table->dateTime('date')->nullable('true');
+            $table->string('extra_info')->nullable('false');;
+            $table->string('remark')->nullable('true');
+            $table->integer('severity_id')->unsigned()->nullable('true');
+            //$table->integer('remarkoption_id')->nullable('true');
+            $table->integer('student_id')->nullable('true');
+            $table->integer('teacher_id')->nullable('true');
             $table->timestamps();
             $table->softDeletes();
 

@@ -17,7 +17,7 @@ class Remark extends Model
         'extra_info',
         'remark',
         'severity_id',
-        'remarkoption_id',
+        //'remarkoption_id',
         'student_id',
         'teacher_id'
     ];
@@ -26,9 +26,9 @@ class Remark extends Model
         return $this->belongsTo(Severity::class);
     }
 
-    public function remarkoption(){
-        return $this->belongsTo(RemarkOption::class);
-    }
+    // public function remarkoption(){
+    //     return $this->belongsTo(RemarkOption::class);
+    // }
 
     public function student(){
         return $this->belongsTo(Student::class);

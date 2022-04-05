@@ -135,12 +135,12 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token',['adminpower'])->plainTextToken;
     }    
 
-    if($user->role == 0){
+    if($user->role == 1){
         //User is a student
         $token = $user->createToken('auth_token',['studentpower'])->plainTextToken;
     }
 
-    if($user->role == 1){
+    if($user->role == 3){
         //User is a teacher
         $token = $user->createToken('auth_token',['teacherpower'])->plainTextToken;
     }
@@ -165,6 +165,10 @@ class AuthController extends Controller
 
     public function me(Request $request)
     {
+            // $data = [];
+            // $data["data"] = $request->user();
+            // // $data["data"] = Auth::user();
+            // return $data;
         return $request->user();
     }
 }

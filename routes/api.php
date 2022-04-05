@@ -51,8 +51,8 @@ use Illuminate\Support\Facades\Route;
 	Route::resource('rankingsettings', RankingSettingsController::class); 
 
 	Route::get('/detailedStudent/{id}',[StudentController::class, 'showCompleteStudent']);
-	Route::post('/filteredRemarks',[RemarkController::class, 'showFilteredRemarks']);
-	Route::post('/storeSameRemarkForMultipleStudents',[RemarkController::class, 'storeSameRemarkForMultipleStudents']);
+	Route::post('/filteredRemarks',[RemarkController::class, 'showFilteredRemarks'])->middleware('auth:sanctum');
+	Route::post('/storeSameRemarkForMultipleStudents',[RemarkController::class, 'storeSameRemarkForMultipleStudents'])->middleware('auth:sanctum');
 	Route::get('/getSchoolInfoByExternalCode',[SchoolController::class, 'getSchoolInfoByExternalCode']);
 	Route::get('/getStudentsBySchoolyearAndCurrentClass/{schoolyearfilter}',[StudentController::class, 'getStudentsBySchoolyearAndCurrentClass']);
 

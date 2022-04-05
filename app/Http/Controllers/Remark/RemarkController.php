@@ -8,6 +8,8 @@ use App\Models\Remark;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 
 class RemarkController extends ApiController
 {
@@ -42,20 +44,31 @@ class RemarkController extends ApiController
 
     public function showFilteredRemarks(Request $request){
 
-            // $student_id = $request->input('student_id');
-            // $teacher_id = $request->input('teacher_id');
-            // $remarkoption_id = $request->input('remarkoption_id');
-            // $class1_id = $request->input('class1_id');
-            // $start_date = $request->input('start_date');
-            // $end_date = $request->input('end_date');
-            // $severity_id = $request->input('severity_id');
+            $user = $request->user();
 
             if($request->input('studentId') != 0){
-                $student_id = $request->input('studentId');
+                //A student or parent is logged in
+                if($user->role <= 2){ 
+                    $student_id = $user->id; //student can only see own data
+                }
+                //A teacher or admin is logged in
+                else{
+                    $student_id = $request->input('studentId');
+                }
             }
-            else{$student_id = null;}
+            else{//User wants to view all students remarks
+                //A student or parent is logged in
+                if($user->role <= 2){ 
+                    $student_id = $user->id; //student can only see own data
+                }
+                //A teacher or admin is logged in
+                else{
+                    $student_id = null;;
+                }
+            }
+
             
-            if($request->input('studentId') != 0){
+            if($request->input('authorId') != 0){
                 $teacher_id = $request->input('authorId');            
             }
             else{$teacher_id = null;}
@@ -77,7 +90,7 @@ class RemarkController extends ApiController
             $remarks = DB::table('remarks')
                 ->join('users as students', 'students.id', '=', 'remarks.student_id')
                 ->join('users as teachers', 'teachers.id', '=', 'remarks.teacher_id')
-                ->join('remark_options', 'remark_options.id', '=', 'remarks.remarkoption_id')
+                //->join('remark_options', 'remark_options.id', '=', 'remarks.remarkoption_id')
                 ->join('severities', 'severities.id', '=', 'remarks.severity_id')
                 ->join('class1s', 'class1s.id', '=', 'students.class1_id')
                 ->select('remarks.*', 'students.firstName as studentFirstName', 'students.lastName as studentLastName', 'class1s.class1', 'teachers.firstName as teacherFirstName', 'teachers.lastName as teacherLastName')
@@ -110,6 +123,12 @@ class RemarkController extends ApiController
     }
 
     public function storeSameRemarkForMultipleStudents (Request $request){
+        
+        $user = $request->user();
+        if($user->role <= 2){ //student or parents cannot save remarks of course :-)
+                abort(403, 'Unauthorized action.');
+        }
+
         $rules = [
             'date' => 'required',
             'remark' => 'required',
@@ -129,9 +148,19 @@ class RemarkController extends ApiController
             $remarkToSave['date'] = $data['date'];
             $remarkToSave['remark'] = $data['remark']; 
             $remarkToSave['severity_id'] = $data['severity'];   
-            $remarkToSave['extra_info'] = $data['extraInfo']; 
+            if(Arr::exists($data, 'extraInfo')){
+                $remarkToSave['extra_info'] = $data['extraInfo'];
+            }
+            // else{
+            //     $remarkToSave['extra_info'] = null;   
+            // }
             $remarkToSave['student_id'] = $studentId;  
-            $remarkToSave['teacher_id'] = $data['teacherId'];
+            
+            if($user->role == 3 || $user->role == 4){
+                $remarkToSave['teacher_id'] = $user->id;
+            }
+            $remarkToSave['created_at'] = now();
+            $remarkToSave['updated_at'] = now();
 
             $remark_id = DB::table('remarks')->insertGetId($remarkToSave);
 
