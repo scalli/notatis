@@ -21,7 +21,13 @@ class RankingSettingsController extends ApiController
         // $RankingSettings = DB::table('ranking_settings')
         //             ->get();
 
-        $RankingSettings = RankingSettings::query()->get();
+        // $RankingSettings = RankingSettings::query()->get();
+
+        $RankingSettings = DB::table('ranking_settings')
+        ->select('id as ranking_settings_id', 'ranking_start_total', 'one_penalty', 
+                    'two_penalty', 'three_penalty', 'four_penalty', 'ranking_start_date',
+                    'ranking_end_date', 'last_updated')
+        ->get();
 
         // $RankingSettings = (array) $RankingSettings;
 

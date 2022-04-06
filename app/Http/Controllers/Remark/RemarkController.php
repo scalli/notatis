@@ -45,42 +45,68 @@ class RemarkController extends ApiController
     public function showFilteredRemarks(Request $request){
 
             $user = $request->user();
+            // $data = [];
+            // $data['data'] = $user;
+            // return $data;
 
-            if($request->input('studentId') != 0){
-                //A student or parent is logged in
-                if($user->role <= 2){ 
-                    $student_id = $user->id; //student can only see own data
-                }
-                //A teacher or admin is logged in
-                else{
-                    $student_id = $request->input('studentId');
-                }
+            if($user->isStudent() || $user->isParent()){
+                $student_id = $user->id; //student can only see own data
+                $class1_id = null; //class doesn't matter
+                $teacher_id = null; //wants to see remarks by all teachers
             }
-            else{//User wants to view all students remarks
-                //A student or parent is logged in
-                if($user->role <= 2){ 
-                    $student_id = $user->id; //student can only see own data
+
+            if($user->isTeacher() || $user->isAdmin()){
+                if($request->input('studentId') != 0){
+                   $student_id = $request->input('studentId');            
                 }
-                //A teacher or admin is logged in
-                else{
-                    $student_id = null;;
+                else{$student_id = null;}
+
+                if($request->input('authorId') != 0){
+                    $teacher_id = $request->input('authorId');            
                 }
+                else{$teacher_id = null;}
+
+                if($request->input('class1Id') != 0){
+                    $class1_id = $request->input('class1Id');            
+                }
+                else{$class1_id = null;}
             }
+
+            // if($request->input('studentId') != 0){
+            //     //A student or parent is logged in
+            //     if($user->isStudent() || $user->isParent()){ 
+            //         $student_id = $user->id; //student can only see own data
+            //     }
+            //     //A teacher or admin is logged in
+            //     else{
+            //         $student_id = $request->input('studentId');
+            //     }
+            // }
+            // else{//User wants to view all students remarks
+            //     //A student or parent is logged in
+            //     if($user->isStudent() || $user->isParent()){ 
+            //         $student_id = $user->id; //student can only see own data
+            //     }
+            //     //A teacher or admin is logged in
+            //     else{
+            //         $student_id = null;;
+            //     }
+            // }
 
             
-            if($request->input('authorId') != 0){
-                $teacher_id = $request->input('authorId');            
-            }
-            else{$teacher_id = null;}
+            // if($request->input('authorId') != 0){
+            //     $teacher_id = $request->input('authorId');            
+            // }
+            // else{$teacher_id = null;}
             
             
             // $remarkoption_id = $request->input('remarkoption_id');
             // $class1_id = $request->input('class1Id');
 
-            if($request->input('class1Id') != 0){
-                $class1_id = $request->input('class1Id');            
-            }
-            else{$class1_id = null;}
+            // if($request->input('class1Id') != 0){
+            //     $class1_id = $request->input('class1Id');            
+            // }
+            // else{$class1_id = null;}
 
             $start_date = $request->input('fromDate');
             $end_date = $request->input('toDate');
@@ -125,7 +151,7 @@ class RemarkController extends ApiController
     public function storeSameRemarkForMultipleStudents (Request $request){
         
         $user = $request->user();
-        if($user->role <= 2){ //student or parents cannot save remarks of course :-)
+        if($user->isStudent() || $user->isParent()){ //student or parents cannot save remarks of course :-)
                 abort(403, 'Unauthorized action.');
         }
 

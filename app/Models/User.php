@@ -20,8 +20,10 @@ class User extends Authenticatable
     const ADMIN_USER = 'true';
     const REGULAR_USER = 'false';
 
-    const TEACHER_USER = '1';
-    const STUDENT_USER = '0';
+    const STUDENT_USER = '1';
+    const PARENT_USER = '2';
+    const TEACHER_USER = '3';
+    const ADMIN_USER1 = '4';
 
     /**
      * The attributes that are mass assignable.
@@ -70,16 +72,24 @@ class User extends Authenticatable
         return $this->verified == USER::VERIFIED_USER;
     }
 
+    // public function isAdmin() {
+    //     return $this->admin == User::ADMIN_USER;
+    // }
+
     public function isAdmin() {
-        return $this->admin == User::ADMIN_USER;
+        return $this->role == User::ADMIN_USER1;
     }
 
     public function isTeacher() {
-        return $this->role == User::ADMIN_TEACHER;
+        return $this->role == User::TEACHER_USER;
     }
 
     public function isStudent() {
-        return $this->role == User::ADMIN_STUDENT;
+        return $this->role == User::STUDENT_USER;
+    }
+
+    public function isParent() {
+        return $this->role == User::PARENT_USER;
     }
 
     public static function generateVerificationCode () {

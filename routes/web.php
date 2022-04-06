@@ -26,3 +26,8 @@ use App\Http\Controllers\AuthController;
  // Route::group(['domain' => '{subdomain}.'.env('APP_DOMAIN'), 'middleware' => 'schoolplatform'], function () {
 	// Route::post('/login', [AuthController::class, 'login']);
  // });
+
+Route::get('/clear-cache', function() {
+    Artisan::call('cache:clear');
+    return "Cache is cleared";
+});

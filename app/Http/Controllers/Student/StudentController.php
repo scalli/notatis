@@ -39,6 +39,10 @@ class StudentController extends ApiController
 //        return $this->showAll($students);
     }
 
+    // public function getParents (){
+        
+    // }
+
     public function getStudentsBySchoolyearAndCurrentClass (int $schoolyearfilter){
 
         $students = DB::table('users')
