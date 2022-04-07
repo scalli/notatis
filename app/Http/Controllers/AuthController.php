@@ -96,7 +96,7 @@ class AuthController extends Controller
         else{
             $data['image'] = null;
         }
-        $data['role'] = 1;
+        $data['role'] = 3;
         $data['created_at'] = now();
         $data['updated_at'] = now();
         $data['lastLoginDate'] = now();

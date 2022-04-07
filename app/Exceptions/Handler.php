@@ -80,7 +80,8 @@ class Handler extends ExceptionHandler
             $errorCode = $e->errorInfo[1];
 
             if($errorCode == 19){
-                return $this->errorResponse('Cannot remove this resource permanently. It is related with another resource.', 19);
+                // return $this->errorResponse('Cannot remove this resource permanently. It is related with another resource.', 19);
+                return $this->errorResponse($e, 19);
             }
         });
 

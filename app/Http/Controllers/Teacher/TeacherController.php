@@ -50,7 +50,8 @@ class TeacherController extends ApiController
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required',
+            'firstName' => 'required',
+            'lastName' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6'
         ];
@@ -58,28 +59,30 @@ class TeacherController extends ApiController
         $this->validate($request, $rules);
 
         $data = $request->all();
-        $data['password'] = bcrypt($request->password);
-        $data['verified'] = User::UNVERIFIED_USER;
-        $data['verification_token'] = User::generateVerificationCode();
-        $data['admin'] = User::REGULAR_USER;
-        if($request->has('image')){
-            $rules_image = [
-                'image' => 'image'
-            ];
-            $this->validate($request, $rules_image);
-            $data['image'] = $request->image->store('','images');
-        }
-        else{
-            $data['image'] = null;
-        }
-        $data['role'] = 1;
-        $data['created_at'] = now();
-        $data['updated_at'] = now();
+        $data = $this->sanitizeData($data);
 
         $user_id = DB::table('users')->insertGetId($data);
         $user = User::find($user_id);
 
         return $this->showOne($user, 201);
+    }
+
+    public function multipleTeachers(Request $request){
+
+        $savedTeachers = [];
+
+        $data_arr = $request->all();
+        foreach ($data_arr as $data) {
+            $data = $this->sanitizeData($data);
+
+            $user_id = DB::table('users')->insertGetId($data);
+            $user = User::find($user_id);
+
+            $savedTeachers = collect(array_push($savedTeachers, $user));
+        }
+
+        return $this->showAll($savedTeachers, 201);
+
     }
 
     /**
@@ -203,5 +206,30 @@ class TeacherController extends ApiController
             return true;
         else
             return false;
+    }
+
+    private function sanitizeData($data){
+        
+        $data['username'] = $data['email'];
+        $data['password'] = bcrypt($data['password']);
+        $data['verified'] = User::UNVERIFIED_USER;
+        $data['verification_token'] = User::generateVerificationCode();
+        $data['admin'] = User::REGULAR_USER;
+        // if($request->has('image')){
+        //     $rules_image = [
+        //         'image' => 'image'
+        //     ];
+        //     $this->validate($request, $rules_image);
+        //     $data['image'] = $request->image->store('','images');
+        // }
+        // else{
+        //     $data['image'] = null;
+        // }
+        $data['role'] = 3; //Teacher role is 3
+        $data['created_at'] = now();
+        $data['updated_at'] = now();
+        $data['lastLoginDate'] = now();
+
+        return $data;
     }
 }
