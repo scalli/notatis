@@ -69,17 +69,19 @@ class TeacherController extends ApiController
 
     public function multipleTeachers(Request $request){
 
-        $savedTeachers = [];
+       $savedTeachers = [];
 
         $data_arr = $request->all();
         foreach ($data_arr as $data) {
-            $data = $this->sanitizeData($data);
+            $sanitzedData = $this->sanitizeData($data);
 
-            $user_id = DB::table('users')->insertGetId($data);
+            $user_id = DB::table('users')->insertGetId($sanitzedData);
             $user = User::find($user_id);
 
-            $savedTeachers = collect(array_push($savedTeachers, $user));
+           array_push($savedTeachers, $user);
         }
+
+        $savedTeachers = collect($savedTeachers);
 
         return $this->showAll($savedTeachers, 201);
 
@@ -133,8 +135,12 @@ class TeacherController extends ApiController
             'admin' => Rule::in([User::ADMIN_USER, User::REGULAR_USER ]),
         ];
 
-        if($request->filled('name')){
-            $user->name = $request->name;
+        if($request->filled('firstName')){
+            $user->firstName = $request->firstName;
+        }
+
+        if($request->filled('lastName')){
+            $user->lastName = $request->lastName;
         }
 
         if($request->filled('email') && $user->email != $request->email){
@@ -147,13 +153,13 @@ class TeacherController extends ApiController
             $user->password = bcrypt($request->password);
         }
 
-        if($request->filled('admin')){
-            if(!$user->isVerified()){
-                return $this->errorResponse('Only verified users can modify the Admin field', 409);
-            }
+        // if($request->filled('admin')){
+        //     if(!$user->isVerified()){
+        //         return $this->errorResponse('Only verified users can modify the Admin field', 409);
+        //     }
 
-            $user->admin = $request->admin;
-        }
+        //     $user->admin = $request->admin;
+        // }
 
         if($request->hasFile('image')){
             $rules_image = [

@@ -51,6 +51,7 @@ class StudentController extends ApiController
            ->select('users.*', 'class1s.class1', 'schoolyears.schoolyear')
            ->where('role', User::STUDENT_USER)
            ->where('class1s.schoolyear_id', '=', $schoolyearfilter)
+           ->where('users.deleted_at','=', null)
            ->select('users.id','users.firstName', 'users.lastName', 'users.email', 'users.username',
                     'users.password', 'users.language', 'users.lastLoginDate', 'users.active', 'users.role',
                     'users.class1_id', 'class1s.class1')
@@ -73,7 +74,8 @@ class StudentController extends ApiController
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required',
+            'firstName' => 'required',
+            'lastName' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6'
         ];
@@ -81,23 +83,25 @@ class StudentController extends ApiController
         $this->validate($request, $rules);
 
         $data = $request->all();
-        $data['password'] = bcrypt($request->password);
-        $data['verified'] = User::UNVERIFIED_USER;
-        $data['verification_token'] = User::generateVerificationCode();
-        $data['admin'] = User::REGULAR_USER;
-        if($request->has('image')){
-            $rules_image = [
-                'image' => 'image'
-            ];
-            $this->validate($request, $rules_image);
-            $data['image'] = $request->image->store('','images');
-        }
-        else{
-            $data['image'] = null;
-        }
-        $data['role'] = 0;
-        $data['created_at'] = now();
-        $data['updated_at'] = now();
+        $data = $this->sanitizeData($data);
+        
+        // $data['password'] = bcrypt($request->password);
+        // $data['verified'] = User::UNVERIFIED_USER;
+        // $data['verification_token'] = User::generateVerificationCode();
+        // $data['admin'] = User::REGULAR_USER;
+        // if($request->has('image')){
+        //     $rules_image = [
+        //         'image' => 'image'
+        //     ];
+        //     $this->validate($request, $rules_image);
+        //     $data['image'] = $request->image->store('','images');
+        // }
+        // else{
+        //     $data['image'] = null;
+        // }
+        // $data['role'] = 0;
+        // $data['created_at'] = now();
+        // $data['updated_at'] = now();
 
         $user_id = DB::table('users')->insertGetId($data);
         $user = User::find($user_id);
@@ -176,8 +180,21 @@ class StudentController extends ApiController
             'admin' => Rule::in([User::ADMIN_USER, User::REGULAR_USER ]),
         ];
 
-        if($request->filled('name')){
-            $user->name = $request->name;
+        if($request->filled('firstName')){
+            $user->firstName = $request->firstName;
+        }
+
+        if($request->filled('lastName')){
+            $user->lastName = $request->lastName;
+        }
+
+        if($request->filled('active')){
+            if($request->active == true || $request->active == 1){
+                $user->active = 1;
+            }
+            else{
+                $user->active = 0;
+            }
         }
 
         if($request->filled('email') && $user->email != $request->email){
@@ -190,13 +207,13 @@ class StudentController extends ApiController
             $user->password = bcrypt($request->password);
         }
 
-        if($request->filled('admin')){
-            if(!$user->isVerified()){
-                return $this->errorResponse('Only verified users can modify the Admin field', 409);
-            }
+        // if($request->filled('admin')){
+        //     if(!$user->isVerified()){
+        //         return $this->errorResponse('Only verified users can modify the Admin field', 409);
+        //     }
 
-            $user->admin = $request->admin;
-        }
+        //     $user->admin = $request->admin;
+        // }
 
         if($request->hasFile('image')){
             $rules_image = [
@@ -207,8 +224,8 @@ class StudentController extends ApiController
             $user->image = $request->image->store('','images');
         }
 
-        if($request->filled('class1')){
-            $user->class1 = $request->class1;
+        if($request->filled('class1_id')){
+            $user->class1_id = $request->class1_id;
         }
 
         $user->role = User::STUDENT_USER;
@@ -248,5 +265,30 @@ class StudentController extends ApiController
             return true;
         else
             return false;
+    }
+
+    private function sanitizeData($data){
+    
+    $data['username'] = $data['email'];
+    $data['password'] = bcrypt($data['password']);
+    $data['verified'] = User::UNVERIFIED_USER;
+    $data['verification_token'] = User::generateVerificationCode();
+    $data['admin'] = User::REGULAR_USER;
+    // if($request->has('image')){
+    //     $rules_image = [
+    //         'image' => 'image'
+    //     ];
+    //     $this->validate($request, $rules_image);
+    //     $data['image'] = $request->image->store('','images');
+    // }
+    // else{
+    //     $data['image'] = null;
+    // }
+    $data['role'] = 1; //Student role is 1
+    $data['created_at'] = now();
+    $data['updated_at'] = now();
+    $data['lastLoginDate'] = now();
+
+    return $data;
     }
 }
